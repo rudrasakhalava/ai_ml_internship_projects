@@ -4,7 +4,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
+
 df = pd.read_csv("diabetes.csv")
+
 
 X = df[[
     "Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
@@ -12,17 +14,22 @@ X = df[[
 ]]
 y = df["Outcome"]
 
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=1
 )
 
+
 scaler = StandardScaler()
+
 
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
+
 model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
+
 
 # New patient
 Pregnancies = int(input("Enter the Pregnancies :: "))
@@ -34,11 +41,24 @@ BMI = float(input("Enter the BMI :: "))
 DiabetesPedigreeFunction = float(input("Enter the DiabetesPedigreeFunction :: "))
 Age = int(input("Enter the Age :: "))
 
-temp = np.array([[Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age]])
 
-temp_scaled = scaler.transform(temp)
 
-result = model.predict(temp_scaled)[0]
+p = pd.DataFrame({
+    "Pregnancies": [Pregnancies],
+    "Glucose": [Glucose],
+    "BloodPressure": [BloodPressure],
+    "SkinThickness": [SkinThickness],
+    "Insulin": [Insulin],
+    "BMI": [BMI],
+    "DiabetesPedigreeFunction": [DiabetesPedigreeFunction],
+    "Age": [Age]
+})
+
+p_scaled = scaler.transform(p)
+
+
+
+result = model.predict(p_scaled)[0]
 
 if result == 1:
     print("Patient is Diabetic")
